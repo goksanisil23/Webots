@@ -4,7 +4,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation 0.9533223332669882 0.24851132713644783 -0.17151865548466344 5.4133044986577845
-  position -0.5497617372218854 2.367887482364999 2.2195724803898846
+  position -1.1203202826319802 3.1811717304781544 3.1244624079591654
   follow "TurtleBot3Burger"
   followType "Pan and Tilt Shot"
 }
@@ -17,7 +17,7 @@ CircleArena {
   wallHeight 0.4
 }
 WoodenBox {
-  translation 0.980747 0.15 0.259901
+  translation 1.33353 0.15 0.770437
   size 0.3 0.3 0.3
 }
 WoodenBox {
@@ -26,7 +26,7 @@ WoodenBox {
   size 0.3 0.3 0.3
 }
 WoodenBox {
-  translation -0.773869 0.15 -0.639
+  translation -0.0810434 0.15 -1.45994
   name "wooden box(2)"
   size 0.3 0.3 0.3
 }
@@ -36,7 +36,7 @@ WoodenBox {
   size 0.3 0.3 0.3
 }
 WoodenBox {
-  translation -1.09887 0.15 0.301011
+  translation -1.32385 0.15 0.596028
   name "wooden box(4)"
   size 0.3 0.3 0.3
 }
@@ -66,7 +66,6 @@ WoodenBox {
   size 0.3 0.3 0.3
 }
 DEF MY_TURTLE TurtleBot3Burger {
-  hidden rotation_11 0.04048637487328355 0.9991172446877945 -0.0112064631837927 0.5405244640775971
   rotation 0 -1 0 1.3678e-05
   controller "pose_from_wheel_tick"
   supervisor TRUE

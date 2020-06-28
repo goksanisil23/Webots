@@ -43,4 +43,8 @@ plt.legend()
 plt.xlabel("x")
 plt.ylabel("z")
 plt.grid(True)
+
+plt.savefig('wheel_odometry.png', dpi=100, bbox_inches='tight')
+
 plt.show()
+

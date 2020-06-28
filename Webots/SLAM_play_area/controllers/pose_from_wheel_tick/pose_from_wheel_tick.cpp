@@ -16,6 +16,12 @@
 // using namespace webots;
 
 static int cleanUp(FILE* measurement_file_ptr, FILE* ground_truth_file_ptr, webots::Supervisor *robot) {
+
+  robot->simulationReset();
+  robot->simulationSetMode(webots::Supervisor::SimulationMode::SIMULATION_MODE_PAUSE);
+  robot->simulationResetPhysics();
+  // robot->restartController();
+
   delete robot;
 
   fclose(measurement_file_ptr);
@@ -171,20 +177,24 @@ int main() {
     
     
     // write actuator 
-    if (robot->getTime() - t < 5.0) {
-     left_motor->setVelocity(3.0);
-     right_motor->setVelocity(2.5);       
+    if (robot->getTime() - t < 10.0) {
+     left_motor->setVelocity(6.0);
+     right_motor->setVelocity(3.0);       
     }
-    else if (robot->getTime() - t < 10.0) {
-     left_motor->setVelocity(1.0);
-     right_motor->setVelocity(2.0);          
+    else if (robot->getTime() - t < 15.0) {
+     left_motor->setVelocity(2.0);
+     right_motor->setVelocity(4.0);          
     }
+    else if (robot->getTime() - t < 25.0) {
+     left_motor->setVelocity(6.5);
+     right_motor->setVelocity(4.0);          
+    }    
 
     // left_motor->setVelocity(3.0);
     // right_motor->setVelocity(3.5);
     
     // controller termination based on condition
-    if (robot->getTime() - t > 10.0) {
+    if (robot->getTime() - t > 25.0) {
       break;
     }
 
