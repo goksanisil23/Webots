@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-measurement_file = open('/home/gisil/Work/SLAM/SLAM/analysis/measurement.txt', 'r') 
+measurement_file = open('/home/gisil/Work/SLAM/SLAM/analysis/wheel_measurement.txt', 'r') 
 ground_truth_file = open('/home/gisil/Work/SLAM/SLAM/analysis/ground_truth.txt', 'r') 
 
 x = []

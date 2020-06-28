@@ -1,27 +1,31 @@
-#include <webots/robot.h>
-#include <webots/motor.h>
-#include <webots/supervisor.h>
-#include <webots/position_sensor.h>
-#include <webots/inertial_unit.h>
+#include <webots/Robot.hpp>
+#include <webots/Motor.hpp>
+#include <webots/Supervisor.hpp>
+#include <webots/PositionSensor.hpp>
+#include <webots/InertialUnit.hpp>
 
 #include <stdio.h>
 #include <math.h>
-#include <string.h>
+#include <cstring>
 
-#include <webots/motor.h>
+#include <thread>
+#include <chrono>
 
 #define TIME_STEP 32
 
-static int my_exit(FILE* measurement_file_ptr, FILE* ground_truth_file_ptr) {
-  wb_robot_cleanup();
+// using namespace webots;
+
+static int cleanUp(FILE* measurement_file_ptr, FILE* ground_truth_file_ptr, webots::Supervisor *robot) {
+  delete robot;
+
   fclose(measurement_file_ptr);
   fclose(ground_truth_file_ptr);
+
   return 0;
 }
 
 double wheel_radius = 0.033;
 double wheel_base = 0.16;
-
 
 double constrainAngle(double angle){
     // angle = fmod(angle,360);
@@ -29,7 +33,6 @@ double constrainAngle(double angle){
     //     angle += 360;
     return angle;
 }
-
 
 void filter_step(double* old_pose, double* new_pose, double left_wheel_sensor_val, double right_wheel_sensor_val) {
   
@@ -69,37 +72,37 @@ void filter_step(double* old_pose, double* new_pose, double left_wheel_sensor_va
 }
 
 int main() {
-  wb_robot_init();
+  // create a robot instance
+  webots::Supervisor* robot = new webots::Supervisor(); // initializes both robot and supervisor
 
   // setup logging
   FILE* measurement_file_ptr;
   FILE* ground_truth_file_ptr;
-  measurement_file_ptr = fopen("/home/gisil/Work/SLAM/SLAM/analysis/measurement.txt", "w+");
+  measurement_file_ptr = fopen("/home/gisil/Work/SLAM/SLAM/analysis/wheel_measurement.txt", "w+");
   ground_truth_file_ptr = fopen("/home/gisil/Work/SLAM/SLAM/analysis/ground_truth.txt", "w+");
 
   // get handle to robot's translation field
-  WbNodeRef robot_node = wb_supervisor_node_get_from_def("MY_TURTLE");
-  WbFieldRef trans_field = wb_supervisor_node_get_field(robot_node, "translation");
-  WbFieldRef rotation_field = wb_supervisor_node_get_field(robot_node, "rotation"); // this is quaternion
+  webots::Node* robot_node = robot->getFromDef("MY_TURTLE");
+  webots::Field* trans_field = robot_node->getField("translation");
+  webots::Field* rotation_field = robot_node->getField("rotation"); // this is quaternion
 
   // get handle to the robot's wheel motors
-  WbDeviceTag left_motor = wb_robot_get_device("left wheel motor");
-  WbDeviceTag right_motor = wb_robot_get_device("right wheel motor");
+  webots::Motor* left_motor = robot->getMotor("left wheel motor");
+  webots::Motor* right_motor = robot->getMotor("right wheel motor");
 
   // get handle to the robot's wheel sensors
-  WbDeviceTag left_wheel_sensor = wb_robot_get_device("left wheel sensor");
-  WbDeviceTag right_wheel_sensor = wb_robot_get_device("right wheel sensor");
-  // get handle to inertial sensor 
-  WbDeviceTag inertial_unit = wb_robot_get_device("inertial unit");
+  webots::PositionSensor* left_wheel_sensor = robot->getPositionSensor("left wheel sensor");
+  webots::PositionSensor* right_wheel_sensor = robot->getPositionSensor("right wheel sensor");
+  webots::InertialUnit* inertial_unit = robot->getInertialUnit("inertial unit");
 
   // need to enable sensors before using
-  wb_position_sensor_enable(left_wheel_sensor, TIME_STEP);
-  wb_position_sensor_enable(right_wheel_sensor, TIME_STEP);
-  wb_inertial_unit_enable(inertial_unit, TIME_STEP);
+  left_wheel_sensor->enable(TIME_STEP);
+  right_wheel_sensor->enable(TIME_STEP);
+  inertial_unit->enable(TIME_STEP);
 
   // set position to infinity since we want velocity control
-  wb_motor_set_position(left_motor, INFINITY);
-  wb_motor_set_position(right_motor, INFINITY);
+  left_motor->setPosition(INFINITY);
+  right_motor->setPosition(INFINITY);
 
   double left_wheel_sensor_val;
   double right_wheel_sensor_val;
@@ -112,8 +115,8 @@ int main() {
   double first_x = 0;
 
   // allocate memory for new_pose and old_pose
-  const double* translation_values = wb_supervisor_field_get_sf_vec3f(trans_field);
-  const double* quat_rotation_values = wb_supervisor_field_get_sf_rotation(rotation_field);
+  const double* translation_values = trans_field->getSFVec3f();
+  const double* quat_rotation_values = rotation_field->getSFRotation();
   double euler_rotation_values[3] = {0, 0, 0};
   const double* roll_pitch_yaw;
 
@@ -122,21 +125,20 @@ int main() {
   double new_pose[3];
   
   // run for a certain duration (in simulation time)
-  double t = wb_robot_get_time();
+  double t = robot->getTime();
   int ctr = 0;
 
-  while (wb_robot_step(TIME_STEP) != -1) {
+  while (robot->step(TIME_STEP) != -1) {
+    
     // read sensor outputs
-
-    roll_pitch_yaw = wb_inertial_unit_get_roll_pitch_yaw(inertial_unit);
+    roll_pitch_yaw = inertial_unit->getRollPitchYaw();
     printf("%f\n", roll_pitch_yaw[2]*180/M_PI);
 
-
     if(ctr == 0) {
-      left_wheel_sensor_val_old =  wb_position_sensor_get_value(left_wheel_sensor);     
-      right_wheel_sensor_val_old = wb_position_sensor_get_value(right_wheel_sensor);
+      left_wheel_sensor_val_old =  left_wheel_sensor->getValue();     
+      right_wheel_sensor_val_old = right_wheel_sensor->getValue();
 
-      translation_values = wb_supervisor_field_get_sf_vec3f(trans_field);
+      translation_values = trans_field->getSFVec3f();
       first_z = translation_values[2];
       first_x = translation_values[0];
 
@@ -147,8 +149,8 @@ int main() {
 
     }
     else {
-      left_wheel_sensor_val = wb_position_sensor_get_value(left_wheel_sensor);
-      right_wheel_sensor_val = wb_position_sensor_get_value(right_wheel_sensor);    
+      left_wheel_sensor_val = left_wheel_sensor->getValue();
+      right_wheel_sensor_val = right_wheel_sensor->getValue();    
 
       delta_right_wheel = right_wheel_sensor_val - right_wheel_sensor_val_old;
       delta_left_wheel = left_wheel_sensor_val - left_wheel_sensor_val_old;
@@ -162,25 +164,27 @@ int main() {
       memcpy(old_pose, new_pose, sizeof(old_pose));
       printf("old pose yaw: %f\n", old_pose[2]);
 
-      translation_values = wb_supervisor_field_get_sf_vec3f(trans_field);
+      translation_values = trans_field->getSFVec3f();
       fprintf(ground_truth_file_ptr, "%f %f\n", translation_values[0], translation_values[2]);      
+
     }
     
     
     // write actuator 
-    // if (wb_robot_get_time() - t < 5.0) {
-    //  wb_motor_set_velocity(left_motor, 3.0);
-    //  wb_motor_set_velocity(right_motor, 2.5);       
-    // }
-    // else if (wb_robot_get_time() - t < 10.0) {
-    //  wb_motor_set_velocity(left_motor, 1.0);
-    //  wb_motor_set_velocity(right_motor, 2.0);          
-    // }
-    wb_motor_set_velocity(left_motor, 3.0);
-    wb_motor_set_velocity(right_motor, 3.0);
+    if (robot->getTime() - t < 5.0) {
+     left_motor->setVelocity(3.0);
+     right_motor->setVelocity(2.5);       
+    }
+    else if (robot->getTime() - t < 10.0) {
+     left_motor->setVelocity(1.0);
+     right_motor->setVelocity(2.0);          
+    }
+
+    // left_motor->setVelocity(3.0);
+    // right_motor->setVelocity(3.5);
     
     // controller termination based on condition
-    if (wb_robot_get_time() - t > 10.0) {
+    if (robot->getTime() - t > 10.0) {
       break;
     }
 
@@ -188,22 +192,13 @@ int main() {
   }
 
   // compute travelled distance
-  translation_values = wb_supervisor_field_get_sf_vec3f(trans_field);
-  double dist = sqrt((translation_values[0]-first_x) * (translation_values[0]-first_x) + (translation_values[2]-first_z) * (translation_values[2]-first_z));
+  translation_values = trans_field->getSFVec3f();
   
   printf("x = %g\n", translation_values[0]);
   printf("z = %g\n", translation_values[2]);
-  printf("dist traveled = %g\n", dist);
   printf("left_wheel_sensor_val = %g\n", left_wheel_sensor_val);
   printf("right_wheel_sensor_val = %g\n", right_wheel_sensor_val);
 
-  
-
-  // reset robot position and physics
-  // const double INITIAL[3] = { 0, 0, 0 };
-  // wb_supervisor_field_set_sf_vec3f(trans_field, INITIAL);
-  // wb_supervisor_node_reset_physics(robot_node);
-
   // end of tests
-  return my_exit(measurement_file_ptr, ground_truth_file_ptr);
+  return cleanUp(measurement_file_ptr, ground_truth_file_ptr, robot);
 }
