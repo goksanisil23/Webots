@@ -3,8 +3,8 @@ WorldInfo {
   basicTimeStep 64
 }
 Viewpoint {
-  orientation 0.9533223332669882 0.24851132713644783 -0.17151865548466344 5.4133044986577845
-  position -1.1203202826319802 3.1811717304781544 3.1244624079591654
+  orientation 0.6915426665717774 0.7030715556856646 0.16570795966559612 5.036265837307569
+  position -4.175695424355402 4.734275063155235 2.1864813922781843
   follow "TurtleBot3Burger"
   followType "Pan and Tilt Shot"
 }
@@ -16,58 +16,193 @@ CircleArena {
   radius 3
   wallHeight 0.4
 }
-WoodenBox {
-  translation 1.33353 0.15 0.770437
-  size 0.3 0.3 0.3
+DEF MY_CYLINDER Solid {
+  translation 2.25998 0.1 -0.514806
+  scale 2 2 2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+  physics Physics {
+  }
 }
-WoodenBox {
-  translation 1.26618 0.15 -1.07342
-  name "wooden box(1)"
-  size 0.3 0.3 0.3
+DEF MY_CYLINDER Solid {
+  translation -0.224778 0.1 -1.97045
+  scale 2 2 2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  name "solid(1)"
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+  physics Physics {
+  }
 }
-WoodenBox {
-  translation -0.0810434 0.15 -1.45994
-  name "wooden box(2)"
-  size 0.3 0.3 0.3
+DEF MY_CYLINDER Solid {
+  translation -1.75159 0.1 -1.51444
+  scale 2 2 2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  name "solid(5)"
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+  physics Physics {
+  }
 }
-WoodenBox {
-  translation -1.62271 0.15 -1.08968
-  name "wooden box(3)"
-  size 0.3 0.3 0.3
+DEF MY_CYLINDER Solid {
+  translation 1.19797 0.1 1.67514
+  scale 2 2 2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  name "solid(2)"
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+  physics Physics {
+  }
 }
-WoodenBox {
-  translation -1.32385 0.15 0.596028
-  name "wooden box(4)"
-  size 0.3 0.3 0.3
+DEF MY_CYLINDER Solid {
+  translation -0.575403 0.1 1.21836
+  scale 2 2 2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  name "solid(3)"
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+  physics Physics {
+  }
 }
-WoodenBox {
-  translation -2.71307 0.15 0.22263
-  name "wooden box(7)"
-  size 0.3 0.3 0.3
+DEF MY_CYLINDER Solid {
+  translation -1.50097 0.1 0.726757
+  scale 2 2 2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  name "solid(7)"
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+  physics Physics {
+  }
 }
-WoodenBox {
-  translation -0.744103 0.15 -2.69736
-  name "wooden box(8)"
-  size 0.3 0.3 0.3
+DEF MY_CYLINDER Solid {
+  translation -0.0770631 0.1 -1.82412
+  scale 2 2 2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  name "solid(4)"
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+  physics Physics {
+  }
 }
-WoodenBox {
-  translation 2.30103 0.15 -0.203241
-  name "wooden box(9)"
-  size 0.3 0.3 0.3
-}
-WoodenBox {
-  translation 0.005323 0.15 1.57959
-  name "wooden box(5)"
-  size 0.3 0.3 0.3
-}
-WoodenBox {
-  translation -1.0974 0.15 1.8598
-  name "wooden box(6)"
-  size 0.3 0.3 0.3
+DEF MY_CYLINDER Solid {
+  translation -1.30851 0.1 0.801213
+  scale 2 2 2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  name "solid(6)"
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+  physics Physics {
+  }
 }
 DEF MY_TURTLE TurtleBot3Burger {
+  hidden rotation_11 0.19384707911712992 0.9751034798419481 -0.10768710933942124 2.0713983836765077
   rotation 0 -1 0 1.3678e-05
-  controller "pose_from_wheel_tick"
+  controller "find_cylinders"
   supervisor TRUE
   extensionSlot [
     InertialUnit {
