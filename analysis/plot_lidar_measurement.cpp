@@ -160,7 +160,7 @@ int main()
     auto get_second = [](const std::pair<float, float>& pair_data) {return pair_data.second;};
 
     // set plotting properties
-    matplotlibcpp::figure_size(600,400);
+    matplotlibcpp::figure_size(1000,800);
     std::map<std::string, std::string> scatter_args;
     scatter_args.insert(std::make_pair("c","g"));
     scatter_args.insert(std::make_pair("label","detected obstacle"));   
@@ -208,9 +208,9 @@ int main()
         std::transform(begin(ray_coordinates), end(ray_coordinates), std::back_inserter(ray_x), get_first);
         std::transform(begin(ray_coordinates), end(ray_coordinates), std::back_inserter(ray_y), get_second);                     
 
-        plot_depth_and_derivatives(scatter_args, depth_values, depth_deriv, average_indices, average_depths);
+        // plot_depth_and_derivatives(scatter_args, depth_values, depth_deriv, average_indices, average_depths);
 
-        // plot_point_cloud( scatter_args2, scatter_args3, obstacle_x, obstacle_y, ray_x, ray_y);
+        plot_point_cloud( scatter_args2, scatter_args3, obstacle_x, obstacle_y, ray_x, ray_y);
 
         if(!ctr) {getchar();ctr++;}
         
