@@ -28,6 +28,8 @@ int main()
     std::string line_wheel;
     std::string line_gt;
 
+    int ctr=0;
+
     std::vector<float> x, z, x_gt, z_gt;
     float x_z_yaw_pair[3];
 
@@ -51,7 +53,7 @@ int main()
         matplotlibcpp::legend();        
         matplotlibcpp::pause(0.01);
 
-
+        if(!ctr) {getchar();ctr++;}
     }
 
     // matplotlibcpp::named_plot("wheel odometry", x,z);
